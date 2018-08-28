@@ -1,0 +1,6 @@
+@import "../node_modules/bootstrap/dist/css/bootstrap.css";
+
+body {
+    background-color: #4e7dc1;
+    margin: 100px auto;
+}

@@ -54,7 +54,7 @@ class UserLogin {
         $this->action = isset($_POST['action']) ? $_POST['action'] : null;
         $this->username = isset($_POST['username']) ? htmlentities($_POST['username']) : null;
         $this->password = isset($_POST['password']) ? htmlentities($_POST['password']) : null;
-
+        
         /**
          * Logout
          */
@@ -66,6 +66,9 @@ class UserLogin {
              */
             $this->user_logged_in = true;
         } elseif ($this->action == 'Login') {
+            if (!empty($this->password)) {
+                $this->password = $this->decryptPassword($this->password);
+            }
             /**
              * do user login
              */
@@ -81,6 +84,19 @@ class UserLogin {
         } else {
             include('views/loginForm.php');
         }
+    }
+
+    /**
+     * Decrypt password
+     * Use same encoding key/iv as in js 
+     * Compatible with php7 as well
+     */
+    private function decryptPassword() {
+        $key = hex2bin("0123456789abcdef0123456789abcdef");
+        $iv =  hex2bin("abcdef9876543210abcdef9876543210");
+        $decrypted = openssl_decrypt($this->password, 'AES-128-CBC', $key, OPENSSL_ZERO_PADDING, $iv); 
+        $decrypted = trim($decrypted);
+        return $decrypted;
     }
 
     /**
